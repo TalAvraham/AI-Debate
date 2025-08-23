@@ -1,0 +1,88 @@
+For making experiaments we have to change :
+* prompts for each agent (the debating agents and the supervisor agent)
+* consesnsus prompts
+* the topic
+* max iterations
+* AI model
+* mission prompt
+
+
+explanation:
+
+changing topic of conversation - in the main file:
+
+if __name__ == "__main__":
+    # Example usage
+    topic = "what is the best SUV for 5 person family?" //here is the topic
+    result = run_consensus_system(topic)
+
+
+
+change max iterations = in the state file (actually agent state):
+def create_initial_state(topic: str) -> AgentState:
+    """Create initial state for the consensus system."""
+    return AgentState(
+        conversation_history=[],
+        iteration_count=0,
+        max_iterations=2, // of presentation mode
+        mode="presentation",
+        consensus_reached=False,
+        consensus_prompt="",
+        consensus_counter=0,
+        agent_x_messages=[],
+        agent_y_messages=[],
+        agent_z_messages=[],
+        current_topic=topic,
+        consensus_round=0,
+        max_consensus_rounds=5  # Prevent infinite loops in the consensus mode
+    )
+
+
+
+AI models - in the cofig file:
+* the first 3 models - must be OPENAI variations
+* the 4th is claude model - it should be kept like that - because of difference in how langgraph deals with each model
+# Model configurations - using valid, available models
+SUPERVISOR_MODEL = "gpt-4o"  # GPT-4o for Supervisor
+AGENT_X_MODEL = "gpt-4.1"  # GPT-3.5 Turbo for Agent X (less capable)
+AGENT_Y_MODEL = "gpt-4o"  # GPT-4o for Agent Y (more capable)
+AGENT_Z_MODEL = "claude-3-5-sonnet-20241022"  # Claude 3.5 Sonnet for Agent Z
+
+
+consensus prompt - in the config file:
+DEFAULT_CONSENSUS_PROMPT = "The debate phase is over. Now you must find areas of agreement and compromise to reach a consensus position that addresses key concerns from all perspectives. Please pick ONE opotion and give it as an answer, the rest will be at the explanation."
+ very important for making the agent accurate when the have to det a decision. Try to keep the "pick ONE answer".
+
+
+prompts of each agent - in the prompts file:
+note that the debating agents has their pattern with place holders.
+please DO NOT CHANE THE OUTPUT STRUCTURE - it can ruin all the system because the code know how to deal specifically with that structure of jsons.
+you can change the pormpts themselves and especially - the AGENT CONFIG - here you can control the agents behavior and personality in very easy way
+# Default agent configurations
+AGENT_CONFIGS = {
+    "agent_x": {
+        "name": "AGENT_X",
+        "personality": "hyundai car expert",
+        "behavior": "focus on hyundai cars and their features. you should focus on reccomand on one specific hyundai model. you should act nicely and help to the others to get to consensus - try to hear other opinions and try to understand them"
+    },
+    "agent_y": {
+        "name": "AGENT_Y", 
+        "personality": "toyota car expert",
+        "behavior": "focus on toyota cars and their features. BUT HE IS KIND SO IT IS NOT TOO AGGRESSIVE and more important to him to be kind and friendly. your mission it to get to the consensus"
+    },
+    "agent_z": {
+        "name": "AGENT_Z",
+        "personality": "you are a neutral person",
+        "behavior": "you are a neutral person that has some knowledge about cars. your mission it to get to the consensus"
+    }
+}
+
+mission prompt - in the pormpts file:
+you cn change it if you want
+MISSION_INSTRUCTIONS = "Debate the given topic and work toward agreement. In consensus mode, actively seek common ground."
+
+
+OUTPUT - note that the code crates JSONS that contains all the conversations, even seperated by agent.
+
+
+the running command (after you activate the .venv) - python -m consensus_system.main
