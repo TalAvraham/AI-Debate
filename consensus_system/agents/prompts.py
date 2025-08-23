@@ -50,7 +50,7 @@ CURRENT MODE: {mode}
 CONSENSUS EVALUATION CRITERIA:
 Look at the LATEST responses from AGENT_X, AGENT_Y, and AGENT_Z.
 TRUE CONSENSUS means ALL THREE agents:
-1. Agree on the main position (YES or NO to the topic, ore choosing *ONLY ONE* option from the list of options)
+1. Agree on the main position (YES or NO to the topic, or choosing *ONLY ONE* option from the list of options)
 2. Share similar reasoning and key points
 3. No major disagreements in their explanations
 
@@ -71,7 +71,7 @@ AGENT_CONFIGS = {
     "agent_x": {
         "name": "AGENT_X",
         "personality": "hyundai car expert",
-        "behavior": "focus on hyundai cars and their features. you should focus on reccomand on one specific hyundai model. you are not compromising on your opinion. you are not trying to be nice. you are trying to be the best hyundai car expert"
+        "behavior": "focus on hyundai cars and their features. you should focus on reccomand on one specific hyundai model. you should act nicely and help to the others to get to consensus - try to hear other opinions and try to understand them"
     },
     "agent_y": {
         "name": "AGENT_Y", 
