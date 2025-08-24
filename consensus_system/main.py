@@ -41,6 +41,7 @@ def export_results_to_json(final_state, topic: str):
         "model": AGENT_X_MODEL,
         "topic": topic,
         "responses": final_state["agent_x_messages"],
+        "full_responses": final_state["agent_x_full_responses"],
         "total_responses": len(final_state["agent_x_messages"]),
         "export_timestamp": datetime.now().isoformat()
     }
@@ -56,6 +57,7 @@ def export_results_to_json(final_state, topic: str):
         "model": AGENT_Y_MODEL,
         "topic": topic,
         "responses": final_state["agent_y_messages"],
+        "full_responses": final_state["agent_y_full_responses"],
         "total_responses": len(final_state["agent_y_messages"]),
         "export_timestamp": datetime.now().isoformat()
     }
@@ -71,6 +73,7 @@ def export_results_to_json(final_state, topic: str):
         "model": AGENT_Z_MODEL,
         "topic": topic,
         "responses": final_state["agent_z_messages"],
+        "full_responses": final_state["agent_z_full_responses"],
         "total_responses": len(final_state["agent_z_messages"]),
         "export_timestamp": datetime.now().isoformat()
     }
@@ -101,9 +104,9 @@ def export_results_to_json(final_state, topic: str):
     print(f"\n📁 Results exported to folder: {output_folder}")
     print(f"📊 Files created:")
     print(f"   • complete_conversation.json")
-    print(f"   • agent_x_responses.json") 
-    print(f"   • agent_y_responses.json")
-    print(f"   • agent_z_responses.json")
+    print(f"   • agent_x_responses.json (now includes full responses with explanations)") 
+    print(f"   • agent_y_responses.json (now includes full responses with explanations)")
+    print(f"   • agent_z_responses.json (now includes full responses with explanations)")
     print(f"   • summary_statistics.json")
     
     return output_folder

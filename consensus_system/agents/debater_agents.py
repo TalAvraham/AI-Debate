@@ -61,6 +61,10 @@ class DebaterAgent:
         agent_messages_key = f"{self.agent_type}_messages"
         state[agent_messages_key].append(parsed["response"])
         
+        # Store the full response object with explanation
+        agent_full_responses_key = f"{self.agent_type}_full_responses"
+        state[agent_full_responses_key].append(parsed)
+        
         # Add to conversation history
         conversation_entry = format_conversation_entry(self.config["name"], parsed["response"])
         state["conversation_history"].append(conversation_entry)

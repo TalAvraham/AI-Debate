@@ -1,7 +1,7 @@
 """
 Agent state definitions for the consensus system.
 """
-from typing import List, Literal, TypedDict
+from typing import Dict, List, Literal, TypedDict
 
 
 class AgentState(TypedDict):
@@ -19,6 +19,9 @@ class AgentState(TypedDict):
     current_topic: str                   # Debate topic
     consensus_round: int                 # Current consensus round number
     max_consensus_rounds: int           # Maximum consensus rounds to prevent infinite loops
+    agent_x_full_responses: List[Dict]   # Agent X's full responses including explanation
+    agent_y_full_responses: List[Dict]   # Agent Y's full responses including explanation
+    agent_z_full_responses: List[Dict]   # Agent Z's full responses including explanation
 
 
 def create_initial_state(topic: str) -> AgentState:
@@ -36,5 +39,8 @@ def create_initial_state(topic: str) -> AgentState:
         agent_z_messages=[],
         current_topic=topic,
         consensus_round=0,
-        max_consensus_rounds=5  # Prevent infinite loops
+        max_consensus_rounds=5,  # Prevent infinite loops
+        agent_x_full_responses=[],
+        agent_y_full_responses=[],
+        agent_z_full_responses=[]
     )

@@ -34,7 +34,7 @@ class SupervisorAgent:
         state["consensus_prompt"] = DEFAULT_CONSENSUS_PROMPT
         state["consensus_round"] += 1
         
-        instruction = f"Now entering consensus mode. Round {state['consensus_round']}. {DEFAULT_CONSENSUS_PROMPT}"
+        instruction = f"Now entering consensus mode. Round {state['consensus_round']}"
         
         # Add to conversation history
         conversation_entry = format_conversation_entry("SUPERVISOR", instruction)
