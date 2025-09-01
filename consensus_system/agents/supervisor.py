@@ -3,7 +3,7 @@ Supervisor agent implementation using LangChain.
 """
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage
-from ..agents.prompts import SUPERVISOR_PROMPT_TEMPLATE
+from ..agents.prompts import SUPERVISOR_PROMPT_TEMPLATE, WINNER_DETERMINATION_PROMPT
 from ..utils.response_parser import parse_agent_response, format_conversation_entry
 from ..config import SUPERVISOR_MODEL, OPENAI_API_KEY, DEFAULT_CONSENSUS_PROMPT
 from ..state import AgentState
@@ -45,6 +45,43 @@ class SupervisorAgent:
         
         return state
     
+    def determine_winner(self, state: AgentState) -> AgentState:
+        """Determine the winner of the debate based on argument quality and persuasiveness."""
+        prompt = WINNER_DETERMINATION_PROMPT.format(
+            current_topic=state["current_topic"],
+            conversation_history="\n".join(state["conversation_history"]),
+            agent_x_responses="\n".join(state["agent_x_messages"]),
+            agent_y_responses="\n".join(state["agent_y_messages"]),
+            agent_z_responses="\n".join(state["agent_z_messages"])
+        )
+        
+        # Get winner determination from LLM
+        messages = [HumanMessage(content=prompt)]
+        response = self.llm.invoke(messages).content
+        
+        # Parse response
+        parsed = parse_agent_response(response)
+        
+        # Extract winner information
+        winner_info = {
+            "winner": parsed["response"],
+            "reasoning": parsed["reasoning"],
+            "explanation": parsed["explanation"]
+        }
+        
+        # Update state with winner information
+        state["debate_winner"] = winner_info
+        
+        # Add to conversation history
+        conversation_entry = format_conversation_entry("SUPERVISOR", f"Winner determination: {parsed['explanation']}")
+        state["conversation_history"].append(conversation_entry)
+        
+        print(f"\nSUPERVISOR:")
+        print(f"Winner Determination: {parsed['explanation']}")
+        print(f"Winner: {parsed['response']}")
+        
+        return state
+    
     def evaluate_consensus(self, state: AgentState) -> AgentState:
         """Evaluate if consensus has been reached."""
         prompt = SUPERVISOR_PROMPT_TEMPLATE.format(
@@ -71,5 +108,9 @@ class SupervisorAgent:
         print(f"\nSUPERVISOR:")
         print(f"Consensus Evaluation: {parsed['explanation']}")
         print(f"Consensus Reached: {state['consensus_reached']}")
+        
+        # If consensus is reached or max rounds reached, determine the winner
+        if state["consensus_reached"] or state["consensus_round"] >= state["max_consensus_rounds"]:
+            state = self.determine_winner(state)
         
         return state

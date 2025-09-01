@@ -22,6 +22,7 @@ class AgentState(TypedDict):
     agent_x_full_responses: List[Dict]   # Agent X's full responses including explanation
     agent_y_full_responses: List[Dict]   # Agent Y's full responses including explanation
     agent_z_full_responses: List[Dict]   # Agent Z's full responses including explanation
+    debate_winner: Dict                  # Winner information including winner, reasoning, and explanation
 
 
 def create_initial_state(topic: str) -> AgentState:
@@ -42,5 +43,6 @@ def create_initial_state(topic: str) -> AgentState:
         max_consensus_rounds=5,  # Prevent infinite loops
         agent_x_full_responses=[],
         agent_y_full_responses=[],
-        agent_z_full_responses=[]
+        agent_z_full_responses=[],
+        debate_winner={}
     )

@@ -24,6 +24,7 @@ def export_results_to_json(final_state, topic: str):
         "total_iterations": final_state["iteration_count"],
         "consensus_rounds": final_state["consensus_round"],
         "conversation_history": final_state["conversation_history"],
+        "debate_winner": final_state.get("debate_winner", {}),
         "export_timestamp": datetime.now().isoformat()
     }
     
@@ -94,6 +95,7 @@ def export_results_to_json(final_state, topic: str):
             "agent_z": len(final_state["agent_z_messages"])
         },
         "total_conversation_entries": len(final_state["conversation_history"]),
+        "debate_winner": final_state.get("debate_winner", {}),
         "export_timestamp": datetime.now().isoformat(),
         "output_folder": output_folder
     }
@@ -103,11 +105,11 @@ def export_results_to_json(final_state, topic: str):
     
     print(f"\n📁 Results exported to folder: {output_folder}")
     print(f"📊 Files created:")
-    print(f"   • complete_conversation.json")
+    print(f"   • complete_conversation.json (includes debate winner)")
     print(f"   • agent_x_responses.json (now includes full responses with explanations)") 
     print(f"   • agent_y_responses.json (now includes full responses with explanations)")
     print(f"   • agent_z_responses.json (now includes full responses with explanations)")
-    print(f"   • summary_statistics.json")
+    print(f"   • summary_statistics.json (includes debate winner)")
     
     return output_folder
 
@@ -133,6 +135,12 @@ def run_consensus_system(topic: str):
         print(f"Final Consensus: {final_state['consensus_reached']}")
         print(f"Total Consensus Rounds: {final_state['consensus_counter']}")
         print(f"Total Iterations: {final_state['iteration_count']}")
+        
+        # Display winner information if available
+        if final_state.get("debate_winner"):
+            winner_info = final_state["debate_winner"]
+            print(f"🏆 Debate Winner: {winner_info.get('winner', 'N/A')}")
+            print(f"📝 Winner Reasoning: {winner_info.get('reasoning', 'N/A')}")
         
         # Export results to JSON files
         output_folder = export_results_to_json(final_state, topic)

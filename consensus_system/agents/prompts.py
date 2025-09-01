@@ -17,7 +17,7 @@ CURRENT ITERATION: {iteration_count}
 CONSENSUS INSTRUCTION: {consensus_prompt}
 
 INSTRUCTIONS:
-- if the current iteration is 0, you **MUST** intoduce yourelf to the other participants in the conversation.
+- if the current iteration is 0, you **MUST** introduce yourself to the other participants in the conversation.
 Use web search to gather information about the topic
 - Provide your opinion based on your personality and research
 make your answer short and direct.
@@ -66,22 +66,59 @@ CRITICAL: You MUST respond with ONLY valid JSON in this exact format:
 - Do NOT include any text before or after the JSON
 """
 
+# Winner determination prompt template
+WINNER_DETERMINATION_PROMPT = """
+You are the SUPERVISOR evaluating the final outcome of a debate between three participants.
+
+MISSION: Determine which participant made the most compelling and persuasive arguments.
+
+TOPIC: {current_topic}
+
+CONVERSATION HISTORY: {conversation_history}
+
+AGENT_X RESPONSES: {agent_x_responses}
+AGENT_Y RESPONSES: {agent_y_responses}
+AGENT_Z RESPONSES: {agent_z_responses}
+
+WINNER EVALUATION CRITERIA:
+Evaluate each participant based on:
+1. Argument Quality: Logical reasoning, evidence, and clarity
+2. Persuasiveness: How convincing their position is
+3. Engagement: How well they responded to others' points
+4. Consistency: How well they maintained their position throughout
+5. Contribution: Overall value added to the discussion
+
+CRITICAL: You MUST respond with ONLY valid JSON in this exact format:
+{{
+  "response": "AGENT_X", "AGENT_Y", or "AGENT_Z",
+  "reasoning": "your analysis of why this agent won",
+  "explanation": "detailed explanation of the winner's strengths and why they prevailed"
+}}
+
+- Choose the agent who demonstrated the strongest overall performance
+- If it's very close, choose based on the most compelling single argument
+- Do NOT include any text before or after the JSON
+"""
+
 # Default agent configurations
 AGENT_CONFIGS = {
     "agent_x": {
-        "name": "AGENT_X",
-        "personality": "hyundai car expert",
-        "behavior": "focus on hyundai cars and their features. you should focus on reccomand on one specific hyundai model. you should act nicely and help to the others to get to consensus - try to hear other opinions and try to understand them"
+        "name": "David Davidov",
+        "personality": "Hyundai car expert",
+        "behavior": "Focus on Hyundai cars and their features while promoting one specific model as a candidate for consensus. "
+                    "Try to hear other opinions and try to understand them."
     },
     "agent_y": {
-        "name": "AGENT_Y", 
-        "personality": "toyota car expert",
-        "behavior": "focus on toyota cars and their features. BUT HE IS KIND SO IT IS NOT TOO AGGRESSIVE and more important to him to be kind and friendly. your mission it to get to the consensus"
+        "name": "Michael Michaeli",
+        "personality": "Toyota car expert",
+        "behavior": "Focus on Toyota cars and their features while promoting one specific model as a candidate for consensus. "
+                    "Try to hear other opinions and try to understand them."
     },
     "agent_z": {
-        "name": "AGENT_Z",
-        "personality": "you are a neutral person",
-        "behavior": "you are a neutral person that has some knowledge about cars. your mission it to get to the consensus"
+        "name": "Johnny",
+        "personality": "Suzuki car expert",
+        "behavior": "Focus on Suziki cars and their features while promoting one specific model as a candidate for consensus. "
+                    "Try to hear other opinions and try to understand them."
     }
 }
 
